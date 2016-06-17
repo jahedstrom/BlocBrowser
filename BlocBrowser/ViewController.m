@@ -36,7 +36,7 @@
     self.textField.returnKeyType = UIReturnKeyDone;
     self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.textField.placeholder = NSLocalizedString(@"Website URL", @"Placeholder text for web browser URL field");
+    self.textField.placeholder = NSLocalizedString(@"Enter Website or Search", @"Placeholder text for web browser URL field");
     self.textField.backgroundColor = [UIColor colorWithWhite:220/255.0f alpha:1];
     self.textField.delegate = self;
     
@@ -110,10 +110,28 @@
     
     NSString *URLString = textField.text;
     
-    NSURL *URL = [NSURL URLWithString:URLString];
+    NSURL *URL;
     
+    // basic regex search to see if user submitted string has a domain name suffix
+    NSRange suffix = [URLString rangeOfString:@"\\.([a-z]{3})" options:NSRegularExpressionSearch|NSCaseInsensitiveSearch];
+    
+    // Check for spaces in incoming text
+    if ([URLString containsString:@" "]) {
+        NSLog(@"%@", URLString);
+        NSString *removeSpaces = [URLString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+        NSLog(@"%@", removeSpaces);
+        URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/search?q=%@", removeSpaces]];
+    }
+    // No domain name? then perform search
+    else if (suffix.location == NSNotFound) {
+        URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/search?q=%@", URLString]];
+    }
+    else {
+        URL = [NSURL URLWithString:URLString];
+    }
+    
+    // The user didn't type in http: or https:
     if (!URL.scheme) {
-        // The user didn't type in http: or https:
         URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
     }
     
