@@ -53,16 +53,11 @@
     [self.reloadButton setEnabled:NO];
     
     [self.backButton setTitle:NSLocalizedString(@"Back", @"Back Command") forState:UIControlStateNormal];
-    [self.backButton addTarget:self.webView action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-   
     [self.forwardButton setTitle:NSLocalizedString(@"Forward", @"Forward Command") forState:UIControlStateNormal];
-    [self.forwardButton addTarget:self.webView action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
-
     [self.stopButton setTitle:NSLocalizedString(@"Stop", @"Stop Command") forState:UIControlStateNormal];
-    [self.stopButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
-
     [self.reloadButton setTitle:NSLocalizedString(@"Reload", @"Reload Command") forState:UIControlStateNormal];
-    [self.reloadButton addTarget:self.webView action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self addButtonTargets];
     
     for (UIView *viewToAdd in @[self.webView, self.textField, self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
         [mainView addSubview:viewToAdd];
@@ -176,7 +171,33 @@
     self.backButton.enabled = [self.webView canGoBack];
     self.forwardButton.enabled = [self.webView canGoForward];
     self.stopButton.enabled = self.webView.isLoading;
-    self.reloadButton.enabled = !self.webView.isLoading;
+    self.reloadButton.enabled = !self.webView.isLoading && self.webView.URL;
+}
+
+- (void)resetWebView {
+    [self.webView removeFromSuperview];
+    
+    WKWebView *newWebView = [[WKWebView alloc] init];
+    newWebView.navigationDelegate = self;
+    [self.view addSubview:newWebView];
+    
+    self.webView = newWebView;
+    
+    [self addButtonTargets];
+    
+    self.textField.text = nil;
+    [self updateButtonsandTitle];
+}
+
+- (void)addButtonTargets {
+    for (UIButton *button in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
+        [button removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [self.backButton addTarget:self.webView action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    [self.forwardButton addTarget:self.webView action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
+    [self.stopButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+    [self.reloadButton addTarget:self.webView action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
 }
 
 @end
