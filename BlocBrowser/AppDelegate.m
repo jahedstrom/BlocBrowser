@@ -22,6 +22,10 @@
     self.window.backgroundColor = [UIColor whiteColor];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[ViewController alloc] init]];
     [self.window makeKeyAndVisible];
+    
+    NSLog(@"I'm in the didFinishLaunchingWithOptions method");
+
+    
     return YES;
 }
 
@@ -44,6 +48,17 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Bloc Browser"
+                                                                   message:@"Welcome to the Bloc Browser!"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:nil];
+    
+    [alert addAction:defaultAction];
+
+    [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

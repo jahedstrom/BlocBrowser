@@ -64,6 +64,8 @@
     }
     
     self.view = mainView;
+    
+    NSLog(@"I'm in the loadview method");
 
 }
 
