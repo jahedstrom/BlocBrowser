@@ -13,6 +13,7 @@
 		AB3C2CDB1D126C44008C5852 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB3C2CDA1D126C44008C5852 /* Assets.xcassets */; };
 		AB3C2CDE1D126C44008C5852 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB3C2CDC1D126C44008C5852 /* LaunchScreen.storyboard */; };
 		AB3C2CE91D126C44008C5852 /* BlocBrowserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3C2CE81D126C44008C5852 /* BlocBrowserTests.m */; };
+		AB3C2CF51D1706CA008C5852 /* AwesomeFloatingToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3C2CF41D1706CA008C5852 /* AwesomeFloatingToolbar.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,8 @@
 		AB3C2CE41D126C44008C5852 /* BlocBrowserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlocBrowserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB3C2CE81D126C44008C5852 /* BlocBrowserTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlocBrowserTests.m; sourceTree = "<group>"; };
 		AB3C2CEA1D126C44008C5852 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AB3C2CF31D1706CA008C5852 /* AwesomeFloatingToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwesomeFloatingToolbar.h; sourceTree = "<group>"; };
+		AB3C2CF41D1706CA008C5852 /* AwesomeFloatingToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwesomeFloatingToolbar.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +86,8 @@
 				AB3C2CD21D126C44008C5852 /* AppDelegate.m */,
 				AB3C2CD41D126C44008C5852 /* ViewController.h */,
 				AB3C2CD51D126C44008C5852 /* ViewController.m */,
+				AB3C2CF31D1706CA008C5852 /* AwesomeFloatingToolbar.h */,
+				AB3C2CF41D1706CA008C5852 /* AwesomeFloatingToolbar.m */,
 				AB3C2CDA1D126C44008C5852 /* Assets.xcassets */,
 				AB3C2CDC1D126C44008C5852 /* LaunchScreen.storyboard */,
 				AB3C2CDF1D126C44008C5852 /* Info.plist */,
@@ -210,6 +215,7 @@
 				AB3C2CD61D126C44008C5852 /* ViewController.m in Sources */,
 				AB3C2CD31D126C44008C5852 /* AppDelegate.m in Sources */,
 				AB3C2CD01D126C44008C5852 /* main.m in Sources */,
+				AB3C2CF51D1706CA008C5852 /* AwesomeFloatingToolbar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

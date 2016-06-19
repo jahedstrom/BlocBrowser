@@ -11,6 +11,7 @@
 @interface ViewController : UIViewController
 
 - (void)resetWebView;
+- (void)refreshToolbar;
 
 @end
 
