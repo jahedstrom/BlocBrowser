@@ -87,18 +87,27 @@
     
     NSString *URLString = textField.text;
     
-    NSURL *URL = [NSURL URLWithString:URLString];
+    NSURL *URL;
     
-    if (!URL.scheme) {
+    // basic regex search to see if user submitted string has a domain name suffix
+    NSRange suffix = [URLString rangeOfString:@"\\.([a-z]{3})" options:NSRegularExpressionSearch|NSCaseInsensitiveSearch];
+    
+    // Check for spaces in incoming text or no domain name? then perform search
+    if ([URLString containsString:@" "] || suffix.location == NSNotFound) {
+        NSLog(@"%@", URLString);
+        NSString *removeSpaces = [URLString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+        NSLog(@"%@", removeSpaces);
+        URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/search?q=%@", removeSpaces]];
+    } else if (!URL.scheme) {
         // The user didn't type in http: or https:
         URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
+    } else {
+        URL = [NSURL URLWithString:URLString];
     }
-    
-    if (URL) {
-        NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-        [self.webView loadRequest:request];
-    }
-    
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    [self.webView loadRequest:request];
+
     return NO;
 }
 
@@ -163,16 +172,12 @@
     WKWebView *newWebView = [[WKWebView alloc] init];
     newWebView.navigationDelegate = self;
     [self.view addSubview:newWebView];
+    [self.view bringSubviewToFront:self.awesomeToolbar];
     
     self.webView = newWebView;
     
     self.textField.text = nil;
     [self updateButtonsandTitle];
-}
-
-- (void)refreshToolbar {
-    // after becoming active again after background, bring toolbar subview to front.
-    [self.view bringSubviewToFront:self.awesomeToolbar];
 }
 
 #pragma mark - AwesomeFloatingToolbarDelegate
