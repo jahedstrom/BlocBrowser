@@ -78,6 +78,13 @@
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
     
     self.awesomeToolbar.frame = CGRectMake(50, 100, 280, 60);
+    
+    // can't see anything will testing so set the toolbar background to black..
+//    self.awesomeToolbar.backgroundColor = [UIColor blackColor];
+//    if (self.webView.opaque) {
+//        self.webView.opaque = NO;
+//        self.view.backgroundColor = [UIColor blackColor];
+//    }
 }
 
 #pragma mark - UITextFieldDelegate
@@ -203,6 +210,31 @@
     if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
         toolbar.frame = potentialNewFrame;
     }
+}
+
+- (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToResizeWithScale:(CGFloat)scale {
+    
+//    CGAffineTransform transform = CGAffineTransformScale(toolbar.transform, scale, scale);
+//    
+//    for (UILabel *label in toolbar.subviews) {
+//        label.transform = transform;
+//    }
+//    
+//    toolbar.transform = transform;
+    
+    toolbar.transform = CGAffineTransformScale(toolbar.transform, scale, scale);
+//
+//       //Relayout
+//    [toolbar setNeedsLayout];
+//    
+//    scale = 1.0;
+    
+    // I know this isn't optimal.. but handier for debugging purposes
+    float currentWidth = CGRectGetWidth(toolbar.frame);
+    float currentHeight = CGRectGetHeight(toolbar.frame);
+    float newWidth = currentWidth * scale;
+    float newHeight = currentHeight * scale;
+    toolbar.frame = CGRectMake(toolbar.frame.origin.x, toolbar.frame.origin.y, newWidth, newHeight);
 }
 
 @end

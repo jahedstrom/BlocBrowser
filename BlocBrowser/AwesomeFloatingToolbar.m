@@ -16,6 +16,7 @@
 @property (nonatomic, weak) UILabel *currentLabel;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
+@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGesture;
 
 @end
 
@@ -52,6 +53,9 @@
             label.backgroundColor = colorForThisLabel;
             label.textColor = [UIColor whiteColor];
             
+            // test..
+//            label.userInteractionEnabled = YES;
+            
             [labelsArray addObject:label];
         }
         
@@ -67,6 +71,9 @@
     
     self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panFired:)];
     [self addGestureRecognizer:self.panGesture];
+    
+    self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchFired:)];
+    [self addGestureRecognizer:self.pinchGesture];
     
     return self;
 }
@@ -145,6 +152,19 @@
         }
         
         [recognizer setTranslation:CGPointZero inView:self];
+    }
+}
+
+- (void) pinchFired:(UIPinchGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateChanged || recognizer.state == UIGestureRecognizerStateBegan) {
+        CGFloat amount = recognizer.scale;
+        
+        NSLog(@"scale amount: %0.2f", amount);
+        
+        if ([self.delegate respondsToSelector:@selector(floatingToolbar:didTryToResizeWithScale:)]) {
+            [self.delegate floatingToolbar:self didTryToResizeWithScale:amount];
+        }
+        recognizer.scale = 1.0;
     }
 }
 
