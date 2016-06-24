@@ -13,10 +13,13 @@
 @property (nonatomic, strong) NSArray *currentTitles;
 @property (nonatomic, strong) NSArray *colors;
 @property (nonatomic, strong) NSArray *labels;
+@property (nonatomic, assign) NSUInteger rotationIndex;
 @property (nonatomic, weak) UILabel *currentLabel;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGesture;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
+
 
 @end
 
@@ -54,7 +57,7 @@
             label.textColor = [UIColor whiteColor];
             
             // test..
-//            label.userInteractionEnabled = YES;
+            label.userInteractionEnabled = YES;
             
             [labelsArray addObject:label];
         }
@@ -74,6 +77,11 @@
     
     self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchFired:)];
     [self addGestureRecognizer:self.pinchGesture];
+ 
+    self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
+    [self addGestureRecognizer:self.longPressGesture];
+
+    self.rotationIndex = 0;
     
     return self;
 }
@@ -165,6 +173,20 @@
             [self.delegate floatingToolbar:self didTryToResizeWithScale:amount];
         }
         recognizer.scale = 1.0;
+    }
+}
+
+- (void) longPressFired:(UILongPressGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+//        NSLog(@"I'm in longPressFired:");
+        
+        NSUInteger i = self.rotationIndex;
+        for (UILabel *label in self.labels) {
+            (i == 3) ? i = 0 : i++;
+            label.backgroundColor = self.colors[i];
+            NSLog(@"i = %lu, color = %@", (unsigned long)i, self.colors[i]);
+        }
+        _rotationIndex == 3 ? _rotationIndex = 0 : (_rotationIndex += 1);
     }
 }
 

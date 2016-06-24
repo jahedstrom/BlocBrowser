@@ -78,6 +78,7 @@
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
     
     self.awesomeToolbar.frame = CGRectMake(50, 100, 280, 60);
+    self.awesomeToolbar.userInteractionEnabled = YES;
     
     // can't see anything will testing so set the toolbar background to black..
 //    self.awesomeToolbar.backgroundColor = [UIColor blackColor];
@@ -230,11 +231,13 @@
 //    scale = 1.0;
     
     // I know this isn't optimal.. but handier for debugging purposes
+    // any benefit to using CGRectGetWidth vs view.frame.size.width?
     float currentWidth = CGRectGetWidth(toolbar.frame);
     float currentHeight = CGRectGetHeight(toolbar.frame);
     float newWidth = currentWidth * scale;
     float newHeight = currentHeight * scale;
     toolbar.frame = CGRectMake(toolbar.frame.origin.x, toolbar.frame.origin.y, newWidth, newHeight);
+
 }
 
 @end
