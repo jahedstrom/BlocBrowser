@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) NSArray *currentTitles;
 @property (nonatomic, strong) NSArray *colors;
-@property (nonatomic, strong) NSArray *labels;
+@property (nonatomic, strong) NSArray *buttons;
 @property (nonatomic, assign) NSUInteger rotationIndex;
 @property (nonatomic, weak) UILabel *currentLabel;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
@@ -38,118 +38,98 @@
                         [UIColor colorWithRed:255/255.0 green:165/255.0 blue:164/255.0 alpha:1],
                         [UIColor colorWithRed:255/255.0 green:179/255.0 blue:71/255.0 alpha:1]];
         
-        NSMutableArray *labelsArray = [[NSMutableArray alloc] init];
+        NSMutableArray *buttonsArray = [[NSMutableArray alloc] init];
         
-        // Make the 4 labels
-        for (NSString *curretTitle in self.currentTitles) {
-            UILabel *label = [[UILabel alloc] init];
-            label.userInteractionEnabled = NO;
-            label.alpha = 0.25;
+        // Make the 4 buttons
+        for (NSString *currentTitle in self.currentTitles) {
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.enabled = NO;
+            button.alpha = 0.25;
             
-            NSUInteger currentTitleIndex = [self.currentTitles indexOfObject:curretTitle];
+            NSUInteger currentTitleIndex = [self.currentTitles indexOfObject:currentTitle];
             NSString *titleForThisLabel = [self.currentTitles objectAtIndex:currentTitleIndex];
             UIColor *colorForThisLabel = [self.colors objectAtIndex:currentTitleIndex];
             
-            label.textAlignment = NSTextAlignmentCenter;
-            label.font = [UIFont systemFontOfSize:10];
-            label.text = titleForThisLabel;
-            label.backgroundColor = colorForThisLabel;
-            label.textColor = [UIColor whiteColor];
+            [button setTitle:titleForThisLabel forState:UIControlStateNormal];
+            button.titleLabel.textAlignment = NSTextAlignmentCenter;
+            button.titleLabel.font = [UIFont systemFontOfSize:10];
+            button.backgroundColor = colorForThisLabel;
+            [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             
-            // test..
-            label.userInteractionEnabled = YES;
-            
-            [labelsArray addObject:label];
+            [buttonsArray addObject:button];
         }
         
-        self.labels = labelsArray;
+        self.buttons = buttonsArray;
         
-        for (UILabel *thisLabel in self.labels) {
-            [self addSubview:thisLabel];
+        // all buttons can use the same action method since the delgate sorts out which button does what
+        for (UIButton *thisButton in self.buttons) {
+            [thisButton addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            [self addSubview:thisButton];
         }
+        
+        self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panFired:)];
+        [self addGestureRecognizer:self.panGesture];
+        
+        self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchFired:)];
+        [self addGestureRecognizer:self.pinchGesture];
+        
+        self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
+        [self addGestureRecognizer:self.longPressGesture];
+        
+        self.rotationIndex = 0;
     }
     
-    self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
-    [self addGestureRecognizer:self.tapGesture];
-    
-    self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panFired:)];
-    [self addGestureRecognizer:self.panGesture];
-    
-    self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchFired:)];
-    [self addGestureRecognizer:self.pinchGesture];
- 
-    self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
-    [self addGestureRecognizer:self.longPressGesture];
-
-    self.rotationIndex = 0;
-    
     return self;
+
 }
 
 - (void) layoutSubviews {
-    // set the frames for the 4 labels
+    // set the frames for the 4 buttons
     
     // when is this method called?
     NSLog(@"layoutSubviews method called");
     
-    for (UILabel *thisLabel in self.labels) {
-        NSUInteger currentLabelIndex = [self.labels indexOfObject:thisLabel];
+    for (UIButton *thisButton in self.buttons) {
+        NSUInteger currentbuttonIndex = [self.buttons indexOfObject:thisButton];
         
-        CGFloat labelHeight = CGRectGetHeight(self.bounds) / 2;
-        CGFloat labelWidth = CGRectGetWidth(self.bounds) / 2;
-        CGFloat labelX = 0;
-        CGFloat labelY = 0;
+        CGFloat buttonHeight = CGRectGetHeight(self.bounds) / 2;
+        CGFloat buttonWidth = CGRectGetWidth(self.bounds) / 2;
+        CGFloat buttonX = 0;
+        CGFloat buttonY = 0;
         
-        // adjust labelX and labelY for each label
-        if (currentLabelIndex < 2) {
+        // adjust buttonX and buttonY for each button
+        if (currentbuttonIndex < 2) {
             // 0 or 1, so on top
-            labelY = 0;
+            buttonY = 0;
         } else {
             // 2 or 3, so on bottom
-            labelY = CGRectGetHeight(self.bounds) / 2;
+            buttonY = CGRectGetHeight(self.bounds) / 2;
         }
         
-        if (currentLabelIndex % 2 == 0) {
-            // if currentLabelIndex is evenly divisible by 2, it's 0 or 2, so on the left
-            labelX = 0;
+        if (currentbuttonIndex % 2 == 0) {
+            // if currentbuttonIndex is evenly divisible by 2, it's 0 or 2, so on the left
+            buttonX = 0;
         } else {
             // 1 or 3, so on the right
-            labelX = CGRectGetWidth(self.bounds) / 2;
+            buttonX = CGRectGetWidth(self.bounds) / 2;
         }
         
-        thisLabel.frame = CGRectMake(labelX, labelY, labelWidth, labelHeight);
+        thisButton.frame = CGRectMake(buttonX, buttonY, buttonWidth, buttonHeight);
         
     }
 }
 
 # pragma mark - Touch Handling
 
-- (UILabel *) labelFromTouches:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    CGPoint location = [touch locationInView:self];
-    UIView *subview = [self hitTest:location withEvent:event];
-    
-    if ([subview isKindOfClass:[UILabel class]]) {
-        return (UILabel *)subview;
-    } else {
-        return nil;
+- (void)buttonPressed:(id)sender {
+    // dim the button when pressed...
+    ((UIButton *)sender).alpha = 0.5;
+    if ([self.delegate respondsToSelector:@selector(floatingToolbar:didSelectButtonWithTitle:)]) {
+        [self.delegate floatingToolbar:self didSelectButtonWithTitle:((UIButton *)sender).currentTitle];
     }
 }
 
-- (void) tapFired:(UITapGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateRecognized) {
-        CGPoint location = [recognizer locationInView:self];
-        UIView *tappedView = [self hitTest:location withEvent:nil];
-        
-        if ([self.labels containsObject:tappedView]) {
-            if ([self.delegate respondsToSelector:@selector(floatingToolbar:didSelectButtonWithTitle:)]) {
-                [self.delegate floatingToolbar:self didSelectButtonWithTitle:((UILabel *)tappedView).text];
-            }
-        }
-    }
-}
-
-- (void) panFired:(UIPanGestureRecognizer *)recognizer {
+- (void)panFired:(UIPanGestureRecognizer *)recognizer {
     if (recognizer.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [recognizer translationInView:self];
         
@@ -163,7 +143,7 @@
     }
 }
 
-- (void) pinchFired:(UIPinchGestureRecognizer *)recognizer {
+- (void)pinchFired:(UIPinchGestureRecognizer *)recognizer {
     if (recognizer.state == UIGestureRecognizerStateChanged || recognizer.state == UIGestureRecognizerStateBegan) {
         CGFloat amount = recognizer.scale;
         
@@ -176,14 +156,14 @@
     }
 }
 
-- (void) longPressFired:(UILongPressGestureRecognizer *)recognizer {
+- (void)longPressFired:(UILongPressGestureRecognizer *)recognizer {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
 //        NSLog(@"I'm in longPressFired:");
         
         NSUInteger i = self.rotationIndex;
-        for (UILabel *label in self.labels) {
+        for (UIButton *button in self.buttons) {
             (i == 3) ? i = 0 : i++;
-            label.backgroundColor = self.colors[i];
+            button.backgroundColor = self.colors[i];
             NSLog(@"i = %lu, color = %@", (unsigned long)i, self.colors[i]);
         }
         _rotationIndex == 3 ? _rotationIndex = 0 : (_rotationIndex += 1);
@@ -198,9 +178,9 @@
     NSUInteger index = [self.currentTitles indexOfObject:title];
     
     if (index != NSNotFound) {
-        UILabel *label = [self.labels objectAtIndex:index];
-        label.userInteractionEnabled = enabled;
-        label.alpha = enabled ? 1.0 : 0.25;
+        UIButton *button = [self.buttons objectAtIndex:index];
+        button.enabled = enabled;
+        button.alpha = enabled ? 1.0 : 0.25;
     }
 }
 

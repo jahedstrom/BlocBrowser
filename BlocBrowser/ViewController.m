@@ -79,13 +79,6 @@
     
     self.awesomeToolbar.frame = CGRectMake(50, 100, 280, 60);
     self.awesomeToolbar.userInteractionEnabled = YES;
-    
-    // can't see anything will testing so set the toolbar background to black..
-//    self.awesomeToolbar.backgroundColor = [UIColor blackColor];
-//    if (self.webView.opaque) {
-//        self.webView.opaque = NO;
-//        self.view.backgroundColor = [UIColor blackColor];
-//    }
 }
 
 #pragma mark - UITextFieldDelegate
