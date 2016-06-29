@@ -63,6 +63,9 @@
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
+    
+    self.awesomeToolbar.frame = CGRectMake(50, 100, 280, 60);
+    self.awesomeToolbar.userInteractionEnabled = YES;
 }
 
 - (void)viewWillLayoutSubviews {
@@ -76,9 +79,6 @@
     // Now, assign the frames
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
-    
-    self.awesomeToolbar.frame = CGRectMake(50, 100, 280, 60);
-    self.awesomeToolbar.userInteractionEnabled = YES;
 }
 
 #pragma mark - UITextFieldDelegate
@@ -207,30 +207,23 @@
 }
 
 - (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToResizeWithScale:(CGFloat)scale {
-    
-//    CGAffineTransform transform = CGAffineTransformScale(toolbar.transform, scale, scale);
-//    
-//    for (UILabel *label in toolbar.subviews) {
-//        label.transform = transform;
-//    }
-//    
-//    toolbar.transform = transform;
-    
-    toolbar.transform = CGAffineTransformScale(toolbar.transform, scale, scale);
-//
-//       //Relayout
-//    [toolbar setNeedsLayout];
-//    
-//    scale = 1.0;
-    
     // I know this isn't optimal.. but handier for debugging purposes
     // any benefit to using CGRectGetWidth vs view.frame.size.width?
+    CGPoint currentCenter = toolbar.center;
+    float currentX = toolbar.frame.origin.x;
+    float currentY = toolbar.frame.origin.y;
     float currentWidth = CGRectGetWidth(toolbar.frame);
     float currentHeight = CGRectGetHeight(toolbar.frame);
     float newWidth = currentWidth * scale;
     float newHeight = currentHeight * scale;
-    toolbar.frame = CGRectMake(toolbar.frame.origin.x, toolbar.frame.origin.y, newWidth, newHeight);
+    
+    CGRect potentialNewFrame= CGRectMake(currentX, currentY, newWidth, newHeight);
+    
+    if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
+        toolbar.frame = potentialNewFrame;
+        [toolbar setCenter:currentCenter];
 
+    }
 }
 
 @end
